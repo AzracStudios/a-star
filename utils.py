@@ -3,29 +3,44 @@ from cell import Cell
 
 
 ## UTILS ##
-def get_neighbours(pos, _map, ignore_type="wall"):
-    neighbours = [
-        _map[pos[0] + 1 if pos[0] < MAP_SIZE - 1 else pos[0]][pos[1]],
-        _map[pos[0] - 1 if pos[0] > 0 else pos[0]][pos[1]],
-        _map[pos[0]][pos[1] + 1 if pos[1] < MAP_SIZE - 1 else pos[1]],
-        _map[pos[0]][pos[1] - 1 if pos[1] > 0 else pos[1]],
-    ]
+def get_neighbours(pos, _map, ignore_type, ignore_self=True):
+    neighbours = []
 
-    for i, neighbour in enumerate(neighbours):
-        if neighbour == _map[pos[0]][pos[1]] or neighbour.type == ignore_type:
-            del neighbours[i]
+    if ignore_self:
+        if _map[pos[0]][pos[1]].type == ignore_type:
+            return []
+
+    if pos[0] + 1 < MAP_SIZE:
+        if _map[pos[0] + 1][pos[1]].type != ignore_type:
+            neighbours.append(_map[pos[0] + 1][pos[1]])
+
+    if pos[0] - 1 >= 0:
+        if _map[pos[0] - 1][pos[1]].type != ignore_type:
+            neighbours.append(_map[pos[0] - 1][pos[1]])
+
+    if pos[1] + 1 < MAP_SIZE:
+        if _map[pos[0]][pos[1] + 1].type != ignore_type:
+            neighbours.append(_map[pos[0]][pos[1] + 1])
+
+    if pos[1] - 1 >= 0:
+        if _map[pos[0]][pos[1] - 1] != ignore_type:
+            neighbours.append(_map[pos[0]][pos[1] - 1])
 
     return neighbours
+
 
 def update_neighbours(_map):
     for row in _map:
         for cell in row:
-            cell.neighbours = get_neighbours(cell.position, _map)
+            cell.neighbours = get_neighbours(cell.position, _map, ignore_type="wall")
+
+    return _map
+
 
 def flood_fill(pos, _map):
     node = _map[pos[0]][pos[1]]
     node.update_type("wall")
-    node_neighbours = get_neighbours(pos, _map)
+    node_neighbours = get_neighbours(pos, _map, ignore_type="wall")
 
     for i in node_neighbours:
         if i.type == "empty":
@@ -51,6 +66,7 @@ def render_frame(_map):
     for i in range(MAP_SIZE):
         for j in range(MAP_SIZE):
             pygame.draw.rect(SCREEN, _map[i][j].tile_color, _map[i][j].tile)
+
 
 def reconstruct_path(came_from, current, render, clock):
     while current in came_from:

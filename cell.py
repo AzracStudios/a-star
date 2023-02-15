@@ -47,3 +47,6 @@ class Cell:
             elif type == "path":
                 self.tile_color = (219, 57, 237)
 
+    def update_neighbours(self, neighbours):
+        self.neighbours = neighbours
+

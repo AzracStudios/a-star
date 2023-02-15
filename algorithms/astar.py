@@ -40,20 +40,21 @@ def astar(render, _map, start, end, clock):
             return _map
 
         for neighbour in current.neighbours:
-            temp_g_score = g_score[current] + 1
+            if neighbour.type != "wall":
+                temp_g_score = g_score[current] + 1
 
-            if temp_g_score < g_score[neighbour]:
-                came_from[neighbour] = current
-                
-                g_score[neighbour] = temp_g_score
-                f_score[neighbour] = temp_g_score + heuristic(
-                    neighbour.position, end.position)
+                if temp_g_score < g_score[neighbour]:
+                    came_from[neighbour] = current
+                    
+                    g_score[neighbour] = temp_g_score
+                    f_score[neighbour] = temp_g_score + heuristic(
+                        neighbour.position, end.position)
 
-                if neighbour not in open_set_hash:
-                    count += 1
-                    open_set.put((f_score[neighbour], count, neighbour))
-                    open_set_hash.add(neighbour)
-                    neighbour.update_type("open")
+                    if neighbour not in open_set_hash:
+                        count += 1
+                        open_set.put((f_score[neighbour], count, neighbour))
+                        open_set_hash.add(neighbour)
+                        neighbour.update_type("open")
 
         render()
 
