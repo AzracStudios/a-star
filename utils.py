@@ -30,9 +30,9 @@ def get_neighbours(pos, _map, ignore_type, ignore_self=True):
 
 
 def update_neighbours(_map):
-    for row in _map:
-        for cell in row:
-            cell.neighbours = get_neighbours(cell.position, _map, ignore_type="wall")
+    for y in range(len(_map)):
+        for x in range(len(_map[y])):
+            _map[y][x].neighbours = get_neighbours(_map[y][x].position, _map, ignore_type="wall")
 
     return _map
 
@@ -40,8 +40,8 @@ def update_neighbours(_map):
 def flood_fill(pos, _map):
     node = _map[pos[0]][pos[1]]
     node.update_type("wall")
-    node_neighbours = get_neighbours(pos, _map, ignore_type="wall")
-
+    node_neighbours = node.neighbours
+    
     for i in node_neighbours:
         if i.type == "empty":
             flood_fill(i.position, _map)
