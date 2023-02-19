@@ -118,6 +118,7 @@ def main():
 
             if pygame.mouse.get_pressed()[2] and to_place:  #RMB
                 pos = pygame.mouse.get_pos()
+                current_cell_i = (pos[0] // MAP_RES, pos[1] // MAP_RES)
                 current_cell = (pos[0] // MAP_RES, pos[1] // MAP_RES)
 
                 _map[current_cell[0]][current_cell[1]].update_type("empty", by_pass=True)
